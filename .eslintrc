@@ -1,0 +1,53 @@
+{
+    "root": true,
+    "parser": "babel-eslint",
+    "plugins": ["babel", "prettier"],
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "env": { "node": true,  "jest": true, "es2020": true },
+    "overrides": [
+      {
+        "files": ["**/*.ts", "**/*.tsx"],
+        "parser": "@typescript-eslint/parser",
+        "plugins": ["@typescript-eslint", "babel", "prettier"]
+      }
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      "quotes": ["error", "backtick", "avoid-escape"],
+      "comma-dangle": [
+        "error",
+        {
+          "arrays": "always-multiline",
+          "objects": "always-multiline",
+          "imports": "always-multiline",
+          "exports": "always-multiline",
+          "functions": "ignore"
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "import/no-webpack-loader-syntax": "off",
+      "import/no-extraneous-dependencies": "off",
+      "no-undef": "warn",
+      "no-console": "warn",
+      "no-plusplus": "off",
+      "no-return-assign": "off",
+      "no-param-reassign": "off",
+      "no-useless-escape": "warn",
+      "no-nested-ternary": "off",
+      "no-confusing-arrow": "warn",
+      "no-underscore-dangle": "error",
+      "no-unused-expressions": "off",
+      "no-unexpected-multiline": "off",
+      "function-paren-newline": "off",
+      "global-require": "off",
+      "max-len": "off",
+      "consistent-return": "off",
+      "class-methods-use-this": "off",
+      "dot-notation": "off",
+      "implicit-arrow-linebreak": "off",
+      "arrow-parens": "off"
+    }
+  }
+  
