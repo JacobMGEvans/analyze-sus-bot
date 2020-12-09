@@ -25,7 +25,7 @@ docker build -t analyze-sus-bot .
 docker run -e APP_ID=<app-id> -e PRIVATE_KEY=<pem-value> analyze-sus-bot
 ```
 ## Commands 
-CMD CMD_Type Target
+CMD Target_Type Target
 ### Issues Comments
 !analyze URL Your_URL
   
