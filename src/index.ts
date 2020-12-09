@@ -1,5 +1,6 @@
 import { Probot } from "probot";
-import axios from "axios";
+import { URLSearchParams } from "url";
+import fetch from "node-fetch";
 
 export = async ({ app }: { app: Probot }): Promise<void> => {
   app.on(`issue_comment.created`, async (context) => {
@@ -14,7 +15,7 @@ export = async ({ app }: { app: Probot }): Promise<void> => {
     const analyzeTarget = bodyArr[analyzeCmd + 2];
     const response = virusTotalURLReqs(analyzeTarget);
     try {
-      console.log((await response).response);
+      console.log(await response);
     } catch (er) {
       console.log(er.response, `ERROR`);
     }
@@ -38,16 +39,16 @@ export = async ({ app }: { app: Probot }): Promise<void> => {
 //     type: ``;
 //   };
 // };
-const virusTotalURLReqs = async (
-  url: string
-): Promise<{ response: Record<string, unknown> }> => {
-  return await axios.post(
-    `https://www.virustotal.com/api/v3/urls`,
-    { url },
-    {
+const virusTotalURLReqs = async (url: string) => {
+  const formStruct = new URLSearchParams();
+  formStruct.append(`url`, url);
+  return (
+    await fetch(`https://www.virustotal.com/api/v3/urls`, {
+      method: `POST`,
+      body: formStruct,
       headers: {
-        "x-apikey": process.env.VIRUS_TOTAL_KEY,
+        "x-apikey": process.env.VIRUS_TOTAL_KEY as string,
       },
-    }
-  );
+    })
+  ).json();
 };
