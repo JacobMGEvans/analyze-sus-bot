@@ -1,22 +1,27 @@
 import { Probot } from "probot";
+import axios from "axios";
 
-export = ({ app }: { app: Probot }) => {
+export = async ({ app }: { app: Probot }): Promise<void> => {
   app.on(`issue_comment.created`, async (context) => {
     const comment = context.payload.comment;
-    const body = comment.body;
-    // its grabbing "!"
-    const analyzeCmd = body.search(`!analyze`);
-    if (!body[analyzeCmd]) return;
-    // grabbing "a"
-    const searchType = body[analyzeCmd + 1];
-    const analyzeTarget = body[analyzeCmd + 2];
-    console.log(body[analyzeCmd]);
-    console.log({ searchType, analyzeTarget });
+    const bodyArr = comment.body.split(` `);
+
+    const analyzeCmd = bodyArr.findIndex((value) => value === `!analyze`);
+    if (!bodyArr[analyzeCmd]) return;
+
+    // const cmdType = bodyArr[analyzeCmd];
+    // const searchType = bodyArr[analyzeCmd + 1];
+    const analyzeTarget = bodyArr[analyzeCmd + 2];
+    const response = virusTotalURLReqs(analyzeTarget);
+    try {
+      console.log((await response).response);
+    } catch (er) {
+      console.log(er.response, `ERROR`);
+    }
     // const issueComment = context.issue({
     //   body: "Thanks for opening this issue!",
     // });
     // await context.octokit.issues.createComment(issueComment);
-    return;
   });
 
   // app.on("pull_request_review_comment.created", async (context) => {
@@ -26,4 +31,23 @@ export = ({ app }: { app: Probot }) => {
   //   // });
   //   // await context.octokit.issues.createComment(issueComment);
   // });
+};
+// type urlRes = {
+//   data: {
+//     id: ``;
+//     type: ``;
+//   };
+// };
+const virusTotalURLReqs = async (
+  url: string
+): Promise<{ response: Record<string, unknown> }> => {
+  return await axios.post(
+    `https://www.virustotal.com/api/v3/urls`,
+    { url },
+    {
+      headers: {
+        "x-apikey": process.env.VIRUS_TOTAL_KEY,
+      },
+    }
+  );
 };

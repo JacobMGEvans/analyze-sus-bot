@@ -20,6 +20,7 @@
     "start:dev": "tsc && probot run ./lib/index.js"
   },
   "dependencies": {
+    "node-fetch": "^2.6.1",
     "probot": "^10.9.5"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@typescript-eslint/parser": "^4.9.1",
     "eslint": "^7.15.0",
     "eslint-config-prettier": "^7.0.0",
+    "eslint-plugin-prettier": "^3.2.0",
     "jest": "^26.4.0",
     "nock": "^13.0.4",
     "prettier": "^2.2.1",
