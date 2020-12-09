@@ -1,6 +1,6 @@
 # analyze-sus-bot
 
-> A GitHub App built with [Probot](https://github.com/probot/probot) that GitHub Bot to analyze suspicious URLs &amp; Files 
+> A GitHub App built with [Probot](https://github.com/probot/probot) that will analyze suspicious URLs & Files (currently manually triggered)
 
 ## Setup
 
@@ -24,7 +24,11 @@ docker build -t analyze-sus-bot .
 # 2. Start container
 docker run -e APP_ID=<app-id> -e PRIVATE_KEY=<pem-value> analyze-sus-bot
 ```
-
+## Commands 
+CMD Target_Type Target
+### Issues Comments
+!analyze URL Your_URL
+  
 ## Contributing
 
 If you have suggestions for how analyze-sus-bot could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
