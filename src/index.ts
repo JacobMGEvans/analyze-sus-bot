@@ -20,19 +20,19 @@ export = async ({ app }: { app: Probot }): Promise<void> => {
 
     try {
       const resObj: VTURLRes = (await VTURLReq(analyzeTarget)).data;
-      console.log(resObj);
       if (!resObj?.id) return;
 
       const analysisRes = await VTIDAnalysis(resObj?.id);
-      console.log(analysisRes.data.attributes.stats);
+
+      const issueComment = context.issue({
+        body: `**URL Analysis:**
+      ${JSON.stringify(analysisRes.data.attributes.stats, null, 2)}
+      `,
+      });
+      await context.octokit.issues.createComment(issueComment);
     } catch (er) {
       console.log(er.response, `ERROR`);
     }
-
-    // const issueComment = context.issue({
-    //   body: "Thanks for opening this issue!",
-    // });
-    // await context.octokit.issues.createComment(issueComment);
   });
 
   // app.on("pull_request_review_comment.created", async (context) => {

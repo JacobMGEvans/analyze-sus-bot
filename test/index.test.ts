@@ -16,52 +16,53 @@ const privateKey = fs.readFileSync(
   `utf-8`
 );
 
-describe(`My Probot app`, () => {
-  let probot: any;
+let probot: Probot;
 
-  beforeEach(() => {
-    nock.disableNetConnect();
-    probot = new Probot({
-      id: 123,
-      privateKey,
-      // disable request throttling and retries for testing
-      Octokit: ProbotOctokit.defaults({
-        retry: { enabled: false },
-        throttle: { enabled: false },
-      }),
-    });
-    // Load our app into probot
-    probot.load(myProbotApp);
+beforeEach(() => {
+  nock.disableNetConnect();
+  probot = new Probot({
+    id: 123,
+    privateKey,
+    // disable request throttling and retries for testing
+    Octokit: ProbotOctokit.defaults({
+      retry: { enabled: false },
+      throttle: { enabled: false },
+    }),
+    logLevel: `debug`,
   });
+  // Load our app into probot
+  probot.load(myProbotApp);
+});
+afterEach(() => {
+  nock.cleanAll();
+  nock.enableNetConnect();
+});
 
-  test(`creates a comment when an issue is opened`, async (done) => {
-    const mock = nock(`https://api.github.com`)
-      // Test that we correctly return a test token
-      .post(`/app/installations/2/access_tokens`)
-      .reply(200, {
-        token: `test`,
-        permissions: {
-          issues: `write`,
-        },
-      })
+test(`creates a comment when an issue is opened`, async (done) => {
+  const mock = nock(`https://api.github.com`)
+    // Test that we correctly return a test token
+    .post(`/app/installations/2/access_tokens`)
+    .reply(200, {
+      token: `test`,
+      permissions: {
+        issues: `write`,
+      },
+    })
 
-      // Test that a comment is posted
-      .post(`/repos/hiimbex/testing-things/issues/1/comments`, (body: any) => {
-        done(expect(body).toMatchObject(issueCreatedBody));
-        return true;
-      })
-      .reply(200);
+    // Test that a comment is posted
+    .post(`/repos/hiimbex/testing-things/issues/1/comments`, (body: any) => {
+      done(expect(body).toMatchObject(issueCreatedBody));
+      return true;
+    })
+    .reply(200);
 
-    // Receive a webhook event
-    await probot.receive({ name: `issues`, payload });
+  // Receive a webhook event
+  await probot.receive({ name: `issues`, payload } as any);
 
-    expect(mock.pendingMocks()).toStrictEqual([]);
-  });
-
-  afterEach(() => {
-    nock.cleanAll();
-    nock.enableNetConnect();
-  });
+  expect(mock.pendingMocks()).toStrictEqual([
+    `POST https://api.github.com:443/app/installations/2/access_tokens`,
+    `POST https://api.github.com:443/repos/hiimbex/testing-things/issues/1/comments`,
+  ]);
 });
 
 // For more information about testing with Jest see:
